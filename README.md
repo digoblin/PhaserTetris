@@ -1,2 +1,2 @@
 # PhaserTetris
-Self learning phaser with a tetris game
+Learning phaser with a tetris game
