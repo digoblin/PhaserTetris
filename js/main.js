@@ -1,15 +1,15 @@
 
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
-var pieces, ground, currentPiece, cursors, test, canMove;
-var strokeTimer;
+var pieces, ground, currentPiece, cursors, test, canMove, nextStrokeTime;
+var nextStrokeTime = 0;
+var timeBetweenStrokes = 200;
 
 function preload() {
 	game.load.image('square', 'assets/square.png');
 }
 
 function create() {
-	strokeTimer = new Phaser.Timer(game);
 	canMove = true;
 	pieces = game.add.group();
 	pieces.enableBody = true;
@@ -28,20 +28,16 @@ function create() {
 function update() {
 	game.physics.arcade.collide(pieces,ground,pieceHitGround);
 	game.physics.arcade.collide(pieces,pieces);
-	if(cursors.left.isDown && canMove)
+	if(cursors.left.isDown && game.time.now > nextStrokeTime)
 	{
-		canMove = false;
-		strokeTimer.add(1000,function(){console.log("callback");canMove=true;},this,null);
-		strokeTimer.start();
+		nextStrokeTime = game.time.now + timeBetweenStrokes;
 		currentPiece.moveLeft(32);
 	}
-	else if(cursors.right.isDown && canMove)
+	else if(cursors.right.isDown && game.time.now > nextStrokeTime)
 	{
-		canMove = false;
-		strokeTimer.add(1000,function(){canMove=true;},this);
+		nextStrokeTime = game.time.now + timeBetweenStrokes;
 		currentPiece.moveRight(32);
-	}
-	test.body.x +=1;	
+	}	
 }
 
 function Cube(x,y)
